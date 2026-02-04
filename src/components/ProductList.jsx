@@ -73,3 +73,6 @@ function ProductList() {
 }
 
 export default ProductList;
+
+Fix ProductList and Cart functionality
+

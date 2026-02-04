@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addItem } from "./CartSlice";
+import { Link } from "react-router-dom";
 
 const plantsArray = [
   {
@@ -28,12 +29,12 @@ const plantsArray = [
   {
     category: "Succulents",
     plants: [
-      { id: 13, name: "Echeveria", price: 180, image: "https://via.placeholder.com/150" },
-      { id: 14, name: "Haworthia", price: 190, image: "https://via.placeholder.com/150" },
-      { id: 15, name: "Jade Plant", price: 210, image: "https://via.placeholder.com/150" },
-      { id: 16, name: "Cactus", price: 160, image: "https://via.placeholder.com/150" },
-      { id: 17, name: "Aloe Mini", price: 170, image: "https://via.placeholder.com/150" },
-      { id: 18, name: "Sedum", price: 175, image: "https://via.placeholder.com/150" },
+      { id: 13, name: "Cactus", price: 100, image: "https://via.placeholder.com/150" },
+      { id: 14, name: "Jade Plant", price: 180, image: "https://via.placeholder.com/150" },
+      { id: 15, name: "Haworthia", price: 150, image: "https://via.placeholder.com/150" },
+      { id: 16, name: "Echeveria", price: 170, image: "https://via.placeholder.com/150" },
+      { id: 17, name: "Sedum", price: 140, image: "https://via.placeholder.com/150" },
+      { id: 18, name: "Agave", price: 300, image: "https://via.placeholder.com/150" },
     ],
   },
 ];
@@ -42,26 +43,35 @@ function ProductList() {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
 
-  const isAdded = (id) => cartItems.some((item) => item.id === id);
+  const isInCart = (id) => cartItems.some((item) => item.id === id);
 
   return (
     <div>
-      {plantsArray.map((group) => (
-        <div key={group.category}>
-          <h2>{group.category}</h2>
+      {/* Navbar */}
+      <nav>
+        <Link to="/">Home</Link> |{" "}
+        <Link to="/plants">Plants</Link> |{" "}
+        <Link to="/cart">Cart ({cartItems.length})</Link>
+      </nav>
 
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
-            {group.plants.map((plant) => (
-              <div key={plant.id} style={{ border: "1px solid #ccc", margin: 10, padding: 10 }}>
+      <h2>Our Plants</h2>
+
+      {plantsArray.map((category) => (
+        <div key={category.category}>
+          <h3>{category.category}</h3>
+
+          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+            {category.plants.map((plant) => (
+              <div key={plant.id} style={{ border: "1px solid #ccc", padding: "10px" }}>
                 <img src={plant.image} alt={plant.name} />
-                <h3>{plant.name}</h3>
+                <h4>{plant.name}</h4>
                 <p>₹{plant.price}</p>
 
                 <button
-                  disabled={isAdded(plant.id)}
                   onClick={() => dispatch(addItem(plant))}
+                  disabled={isInCart(plant.id)}
                 >
-                  {isAdded(plant.id) ? "Added" : "Add to Cart"}
+                  {isInCart(plant.id) ? "Added" : "Add to Cart"}
                 </button>
               </div>
             ))}
@@ -73,6 +83,3 @@ function ProductList() {
 }
 
 export default ProductList;
-
-Fix ProductList and Cart functionality
-

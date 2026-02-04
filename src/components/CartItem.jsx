@@ -1,9 +1,11 @@
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addItem, removeItem } from "./CartSlice";
+import { removeItem, updateQuantity } from "./CartSlice";
+import { Link } from "react-router-dom";
 
 function CartItem() {
-  const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
 
   const totalAmount = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -12,29 +14,39 @@ function CartItem() {
 
   return (
     <div>
-      <h2>Your Cart</h2>
+      <nav>
+        <Link to="/">Home</Link> |{" "}
+        <Link to="/plants">Plants</Link> |{" "}
+        <Link to="/cart">Cart</Link>
+      </nav>
 
-      {cartItems.length === 0 && <p>Cart is empty</p>}
+      <h2>Shopping Cart</h2>
 
       {cartItems.map((item) => (
-        <div key={item.id}>
-          <p>
-            {item.name} - ₹{item.price} × {item.quantity}
-          </p>
-
-          <button onClick={() => dispatch(addItem(item))}>+</button>
+        <div key={item.id} style={{ border: "1px solid #ccc", padding: "10px" }}>
+          <img src={item.image} alt={item.name} />
+          <h4>{item.name}</h4>
+          <p>Unit Price: ₹{item.price}</p>
+          <p>Total: ₹{item.price * item.quantity}</p>
 
           <button
             onClick={() =>
-              item.quantity === 1
-                ? dispatch(removeItem(item.id))
-                : dispatch({
-                    type: "cart/updateQuantity",
-                    payload: { id: item.id, quantity: item.quantity - 1 },
-                  })
+              item.quantity > 1
+                ? dispatch(updateQuantity({ id: item.id, amount: -1 }))
+                : dispatch(removeItem(item.id))
             }
           >
             -
+          </button>
+
+          <span> {item.quantity} </span>
+
+          <button
+            onClick={() =>
+              dispatch(updateQuantity({ id: item.id, amount: 1 }))
+            }
+          >
+            +
           </button>
 
           <button onClick={() => dispatch(removeItem(item.id))}>
@@ -43,7 +55,11 @@ function CartItem() {
         </div>
       ))}
 
-      <h3>Total: ₹{totalAmount}</h3>
+      <h3>Total Amount: ₹{totalAmount}</h3>
+
+      <button onClick={() => alert("Coming Soon")}>Checkout</button>
+      <br /><br />
+      <Link to="/plants">Continue Shopping</Link>
     </div>
   );
 }

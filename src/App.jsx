@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ProductList from "./components/ProductList";
+import CartItem from "./components/CartItem";
 import "./App.css";
 
 function App() {
@@ -15,7 +16,10 @@ function App() {
           </button>
         </>
       ) : (
-        <ProductList />
+        <>
+          <ProductList />
+          <CartItem />
+        </>
       )}
     </div>
   );

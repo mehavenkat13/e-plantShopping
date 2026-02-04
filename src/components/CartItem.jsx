@@ -1,42 +1,49 @@
-import { useDispatch } from "react-redux";
-import { updateQuantity, removeItem } from "../CartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addItem, removeItem } from "./CartSlice";
 
-function CartItem({ item }) {
+function CartItem() {
+  const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
 
-  const handleDecrease = () => {
-    if (item.quantity === 1) {
-      dispatch(removeItem(item.id));
-    } else {
-      dispatch(updateQuantity({
-        id: item.id,
-        quantity: item.quantity - 1
-      }));
-    }
-  };
+  const totalAmount = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
 
   return (
     <div>
-      <img src={item.image} />
-      <p>{item.name}</p>
-      <p>₹{item.price}</p>
+      <h2>Your Cart</h2>
 
-      <button onClick={() =>
-        dispatch(updateQuantity({
-          id: item.id,
-          quantity: item.quantity + 1
-        }))
-      }>+</button>
+      {cartItems.length === 0 && <p>Cart is empty</p>}
 
-      <span>{item.quantity}</span>
+      {cartItems.map((item) => (
+        <div key={item.id}>
+          <p>
+            {item.name} - ₹{item.price} × {item.quantity}
+          </p>
 
-      <button onClick={handleDecrease}>-</button>
+          <button onClick={() => dispatch(addItem(item))}>+</button>
 
-      <button onClick={() =>
-        dispatch(removeItem(item.id))
-      }>
-        Delete
-      </button>
+          <button
+            onClick={() =>
+              item.quantity === 1
+                ? dispatch(removeItem(item.id))
+                : dispatch({
+                    type: "cart/updateQuantity",
+                    payload: { id: item.id, quantity: item.quantity - 1 },
+                  })
+            }
+          >
+            -
+          </button>
+
+          <button onClick={() => dispatch(removeItem(item.id))}>
+            Delete
+          </button>
+        </div>
+      ))}
+
+      <h3>Total: ₹{totalAmount}</h3>
     </div>
   );
 }

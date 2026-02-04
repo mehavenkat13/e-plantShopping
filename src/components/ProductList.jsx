@@ -1,5 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { addItem } from "./CartSlice";
+import Navbar from "./Navbar";
+
 
 const plantsArray = [
   { id: 1, name: "Aloe Vera", price: 200, category: "Indoor" },
@@ -14,6 +16,7 @@ const plantsArray = [
   { id: 8, name: "Money Plant", price: 220, category: "Decorative" },
   { id: 9, name: "Cactus", price: 140, category: "Decorative" },
 ];
+
 
 function ProductList() {
   const dispatch = useDispatch();
@@ -36,14 +39,15 @@ function ProductList() {
               <div key={plant.id}>
                 <p>{plant.name} - ₹{plant.price}</p>
 
-                <button
-                  disabled={isInCart(plant.id)}
-                  onClick={() =>
-                    dispatch(addItem({ ...plant, quantity: 1 }))
-                  }
-                >
-                  {isInCart(plant.id) ? "Added" : "Add to Cart"}
-                </button>
+               <button
+  disabled={isInCart(plant.id)}
+  onClick={() =>
+    dispatch(addItem({ ...plant, quantity: 1 }))
+  }
+>
+  {isInCart(plant.id) ? "Added" : "Add to Cart"}
+</button>
+
               </div>
             ))}
         </div>
